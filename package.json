@@ -1,11 +1,11 @@
 {
   "name": "opsboard",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "private": true,
   "type": "module",
   "scripts": {
     "test": "node --test tests/*.test.js",
-    "check": "node --check src/domain.js && node --check src/store.js && node --check src/app.js && node --check src/api.js && node --check src/session.js && node --check src/queue.js && node --check src/remote-store.js",
+    "check": "node --check src/domain.js && node --check src/store.js && node --check src/app.js && node --check src/api.js && node --check src/session.js && node --check src/queue.js && node --check src/remote-store.js && node --check src/guest.js",
     "start": "python3 -m http.server 8080",
     "build": "npm run check && npm test && node scripts/build.js"
   },

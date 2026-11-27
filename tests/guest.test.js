@@ -1,0 +1,2 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {createGuestStore} from '../src/guest.js';
+test('guest demo has isolated state',async()=>{const a=createGuestStore(),b=createGuestStore();const before=b.state.projects.length;await a.dispatch({type:'project.save',data:{name:'Guest only',description:''}});assert.equal(a.state.projects.length,before+1);assert.equal(b.state.projects.length,before);assert.equal(createGuestStore().state.projects.length,before);});

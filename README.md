@@ -22,3 +22,5 @@ See docs/mvp-gate.md. The candidate is not approved for production until live te
 
 ## Deployment
 Vercel executes `npm run build`, which checks JavaScript syntax and runs unit tests before copying application assets to `dist`. Documentation, migrations and legacy seed storage are not shipped in the deployment output. Preview remains separate from production. Browser and live authentication tests remain release requirements.
+
+Guest demo uses isolated in-memory sample data. Paid registration is closed in the UI; payment enforcement and email activation are pending. See docs/product-scope.md.
