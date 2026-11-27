@@ -1,17 +1,9 @@
-import {config} from './config.js';
-export const configured=Boolean(config.url && config.anonKey);
-let session=null;
-const base=()=>config.url.replace(/\/$/,'');
-async function request(path,{method='GET',body,auth=true}={}){
- if(!configured)throw Error('The workspace service is not configured.');
- const headers={apikey:config.anonKey,'Content-Type':'application/json'};
- if(auth&&session)headers.Authorization='Bearer '+session.access_token;
- const response=await fetch(base()+path,{method,headers,body:body===undefined?undefined:JSON.stringify(body),cache:'no-store'});
- const data=await response.json().catch(()=>null);
- if(!response.ok)throw Error(data?.msg||data?.message||'Request failed ('+response.status+').');
- return data;
-}
-export async function signIn(email,password){session=await request('/auth/v1/token?grant_type=password',{method:'POST',body:{email,password},auth:false});return session.user;}
-export async function register(email,password){return request('/auth/v1/signup',{method:'POST',body:{email,password},auth:false});}
-export async function signOut(){try{if(session)await request('/auth/v1/logout',{method:'POST'});}finally{session=null;}}
-export async function rpc(name,body={}){if(!session)throw Error('Sign in first.');if(session.expires_at && session.expires_at*1000<Date.now()+60000){session=await request('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:{refresh_token:session.refresh_token},auth:false});}return request('/rest/v1/rpc/'+name,{method:'POST',body});}
+import {config} from './config.js';import {createSessionManager} from './session.js';
+export const configured=Boolean(config.url&&config.anonKey);
+async function request(path,{method='GET',body,token}={}){if(!configured)throw Error('The workspace service is not configured.');const headers={apikey:config.anonKey,'Content-Type':'application/json'};if(token)headers.Authorization='Bearer '+token;const response=await fetch(config.url.replace(/\/$/,'')+path,{method,headers,body:body===undefined?undefined:JSON.stringify(body),cache:'no-store'});const data=await response.json().catch(()=>null);if(!response.ok)throw Error(data?.msg||data?.message||'Request failed ('+response.status+').');return data;}
+const sessions=createSessionManager({storage:{getItem:k=>sessionStorage.getItem(k),setItem:(k,v)=>sessionStorage.setItem(k,v),removeItem:k=>sessionStorage.removeItem(k)},refresh:refresh_token=>request('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:{refresh_token}})});
+export async function signIn(email,password){const s=await request('/auth/v1/token?grant_type=password',{method:'POST',body:{email,password}});sessions.set(s);return s.user;}
+export async function register(email,password){return request('/auth/v1/signup',{method:'POST',body:{email,password}});}
+export async function restoreSession(){if(!configured||!sessions.restore())return false;try{const s=await sessions.get();await request('/auth/v1/user',{token:s.access_token});return true;}catch{sessions.clear();return false;}}
+export async function signOut(){try{const s=await sessions.get();await request('/auth/v1/logout',{method:'POST',token:s.access_token});}finally{sessions.clear();}}
+export async function rpc(name,body={}){const s=await sessions.get();return request('/rest/v1/rpc/'+name,{method:'POST',body,token:s.access_token});}

@@ -1,0 +1,5 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {createSessionManager} from '../src/session.js';import {serialQueue} from '../src/queue.js';
+const storage=()=>{const m=new Map();return {getItem:k=>m.get(k)??null,setItem:(k,v)=>m.set(k,v),removeItem:k=>m.delete(k)};};const token={access_token:'a',refresh_token:'r',expires_at:1000};
+test('restore tab session',async()=>{const s=storage();createSessionManager({storage:s,refresh:()=>{},clock:()=>0}).set(token);const next=createSessionManager({storage:s,refresh:()=>{},clock:()=>0});assert.deepEqual(next.restore(),token);assert.deepEqual(await next.get(),token);});
+test('single refresh',async()=>{let count=0;const m=createSessionManager({storage:storage(),clock:()=>990000,refresh:async()=>{count++;return {...token,expires_at:2000};}});m.set(token);await Promise.all([m.get(),m.get()]);assert.equal(count,1);});
+test('queue recovers after failure',async()=>{const run=serialQueue(),seen=[];const a=run(async()=>{seen.push(1);throw Error('fail');}),b=run(async()=>seen.push(2));await assert.rejects(a);await b;assert.deepEqual(seen,[1,2]);});

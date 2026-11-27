@@ -1,0 +1,2 @@
+# Responsive acceptance contract
+Shared domain and API. 320–359 compact, 360–767 mobile cards and full-screen editor, 768–1023 tablet drawer, 1024–1439 compact sidebar, 1440–1919 desktop, 1920+ wide. Verify 320x568, 390x844, 768x1024, 1024x768, 1366x768, 1920x1080, 2560x1080. Require no page overflow, visible keyboard focus, touch controls, accessible navigation and no clipped dialog actions. Kanban intentionally scrolls horizontally. Browser verification pending.
