@@ -1,2 +1,5 @@
-// Public client configuration. Never put a service-role key here.
-export const config = { url: '', anonKey: '' };
+// Public development project configuration. Never add secret or service-role keys.
+export const config = {
+  "url": "https://sdxhukfaifguujhrkbcg.supabase.co",
+  "anonKey": "sb_publishable_Mtgx1dsId2KZuWePo61PuQ_MXsYOPw2"
+};
