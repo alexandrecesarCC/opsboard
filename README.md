@@ -26,3 +26,5 @@ Vercel executes `npm run build`, which checks JavaScript syntax and runs unit te
 Guest demo uses isolated in-memory sample data. Paid registration is closed in the UI; payment enforcement and email activation are pending. See docs/product-scope.md.
 
 See docs/auth-security.md for staged mandatory MFA and release constraints.
+
+Sales pivot: see docs/sales-pivot.md. The new inbox and webhook are staged; external configuration and end-to-end tests are required.
