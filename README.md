@@ -1,32 +1,16 @@
-# Opsboard
+# Opsboard — connected workspace candidate
 
-A local-first operations workspace for tracking projects, tasks and delivery metrics. Built as a browser-based product demonstration with synthetic data.
+This branch replaces the seeded browser workspace with a real Supabase Auth and PostgreSQL RPC adapter. The interface uses the Forest / Lime design system. No demo accounts or sample records are created.
 
-## Run locally
+## Setup
 
-Requires Node.js 22 for checks and Python 3 for the static server. No package installation is needed.
+1. Create a Supabase project and apply `supabase/migrations/001_workspace.sql` to a new database.
+2. Configure the project URL and public anon key in `src/config.js`. Never include a service-role key.
+3. Configure email confirmation in Supabase Auth.
+4. Serve the repository over HTTPS (or localhost for development).
 
-```sh
-npm run check
-npm test
-npm start
-```
+The sign-in screen intentionally prevents submission until configured. Sessions are kept in memory; refreshing the page requires signing in again. Organization creation and owner-scoped project/task operations are implemented through transactional RPCs. Direct table access is revoked; organization membership is checked in each RPC. No team invitation, password reset, durable session restoration, or assignment-based member writes yet.
 
-Open http://localhost:8080. For deployment, serve the repository root over HTTPS; relative paths support a GitHub Pages project site.
+## Quality gate
 
-## Features
-
-- Project and task creation, editing and deletion; protected project deletion.
-- Kanban drag-and-drop with keyboard-accessible status selectors.
-- Search, status filters, calendar agenda and computed analytics.
-- Activity history, local persistence, responsive layout and appearance preferences.
-
-## Architecture
-
-`src/domain.js` defines validation, immutable state transitions and metrics. `src/store.js` handles persistence and seed data. `src/app.js` owns presentation, event routing and dialogs. CSS contains responsive visual tokens. Tests cover domain rules and storage boundaries.
-
-## Boundaries
-
-This release is a single-device demonstration, not a production multi-user SaaS. It has no authentication, server, remote database or authorization model. Browser storage is not suitable for confidential data. Clearing site data removes saved work. Do not enter sensitive information.
-
-See [architecture notes](docs/architecture.md) for trade-offs.
+Candidate only. SQL migrations, remote auth, browser flows, tenant isolation and deployment require integration testing before merging. The original local demonstration is preserved on main. The existing domain tests remain useful but do not establish backend correctness.
