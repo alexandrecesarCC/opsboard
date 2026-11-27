@@ -11,3 +11,5 @@
 @media(max-width:359px){.kpis{grid-template-columns:1fr}.gate-story{padding:18px}.gate-inner h2{font-size:28px}}
 
 .guest-entry{width:100%;margin:14px 0 10px;white-space:normal}.demo-banner{background:#bceb92;color:#142d28;border-radius:10px;padding:14px;margin:16px 0;font-size:13px;font-weight:600}.gate-inner>p.muted{line-height:1.6}
+
+#mfaQr{width:180px;max-width:100%;background:white;padding:8px;border-radius:8px}.mfa-secret{overflow-wrap:anywhere;font-family:monospace;font-size:13px}.gate-story{background-color:#142d28;background-image:linear-gradient(180deg,#142d28d9,#142d2826),url('login-hero.webp');background-size:cover;background-position:center}.gate-story .gate-art{visibility:hidden}
